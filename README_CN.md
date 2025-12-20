@@ -9,6 +9,17 @@
 </div>
 
 ---
+## 📢 React 版本已发布
+
+### 本项目已正式推出 React 版本实现：
+👉 [pdfjs-annotation-extension-for-react](https://github.com/Laomai-codefee/pdfjs-annotation-extension-for-react/)
+
+1. 新项目在继承本仓库核心设计思想（基于 PDF.js 的可扩展批注体系）的基础上，
+进行了完整的React组件化重构，更适合在现代前端项目中直接集成使用。
+2. 如果你正在使用 React，或希望在 React 应用中构建PDF批注能力，强烈建议关注并使用新的 React 版本项目
+3. 本仓库将继续作为 底层思路与早期实现的参考，而新的功能与演进将主要在 React 版本中进行。
+
+---
 
 [English](./README.md) ｜ 简体中文
 
