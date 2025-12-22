@@ -10,6 +10,18 @@
 
 ---
 
+## 📢 React 版本已发布
+
+### 本项目已正式推出 React 版本实现：
+
+👉 [pdfjs-annotation-extension-for-react](https://github.com/Laomai-codefee/pdfjs-annotation-extension-for-react/)
+
+1. 新项目在继承本仓库核心设计思想（基于 PDF.js 的可扩展批注体系）的基础上，进行了完整的React组件化重构，更适合在现代前端项目中直接集成使用。
+2. 如果你正在使用 React，或希望在 React 应用中构建PDF批注能力，强烈建议关注并使用新的 React 版本项目
+3. 本仓库将继续作为 底层思路与早期实现的参考，而新的功能与演进将主要在 React 版本中进行。
+
+---
+
 [English](./README.md) ｜ 简体中文
 
 ## 🧭 演示
@@ -17,10 +29,12 @@
 地址： [https://laomai-codefee.github.io/pdfjs-annotation-extension/](https://laomai-codefee.github.io/pdfjs-annotation-extension/)
 打开速度较慢，请耐性等待...
 
---- 
+---
 
 ## 📣 近期更新
+
 * 🔥🔥**2025.6.27  v2.2.0 版本**，主要包含如下内容
+
 1. **增加新的批注类型** - 增加箭头、云线
 2. **签名** - 增加输入、上传图片形成签名，输入文字支持字体选择
 3. **盖章** - 增加默认印章，自定义印章及上传图片作为印章，自定义印章支持文字颜色、样式、字体、背景、边框设置，时间戳支持用户名、日期及自定义文字
@@ -29,17 +43,22 @@
 6. **批注样式** - 各批注样式设置，支持颜色、笔触宽度、透明度
 7. **连线** - 增加批注与图形间的连线
 8. 一些 BUG 修正及交互优化
+
 ---
+
 * **2025.5.19  v2.1.1 版本**，主要包含如下内容
+
 1. **支持侧边栏折叠** - 增加 DEFAULT_SIDE_BAR_OPEN 控制侧边栏是否隐藏，默认显示
 2. **支持批注过滤** - 增加批注过滤功能，可通过作者、批注类型进行过滤
 3. **优化批注加亮逻辑** - 批注即使不选中也会加亮，改善体验
+
 * **2025.5.16  v2.1.0 版本**，主要包含如下内容
+
 1. **支持导出 PDF 功能** - 将所绘制批注导出到新的 PDF 文件，支持批注类型 TEXT、HIGHLIGHT、UNDERLINE、STRIKEOUT、SQUARE、CIRCLE、INK、POLYLINE、FREETEXT、STAMP
 2. **签名、盖章** - 增加 ALLOW_REPLY_ON_STAMP 控制是否允许评论、回复，默认关闭
 3. **新增 Note 批注工具** - 对应 PDF Text 类型批注
 
---- 
+---
 
 ## 1、背景
 
@@ -101,13 +120,13 @@
 ### 初始化
 
 ```bash
-    $ npm install 或 yarn
+$ npm install 或 yarn
 ```
 
 ### 运行开发模式
 
 ```bash
-    $ npm run dev 或 yarn dev
+$ npm run dev 或 yarn dev
 ```
 
 ### 查看效果pdfjs viewer 效果
@@ -115,7 +134,7 @@
 仓库自带了一个 DEMO 示例（在examples文件夹中, 进入 ./examples/pdfjs-4.3.136-dist 目录
 
 ```bash
-    $ miniserve 或其他静态服务
+$ miniserve 或其他静态服务
 ```
 
 打开地址：http://localhost:8080/web/viewer.html 即可看到效果
@@ -125,23 +144,23 @@
 ### 地址栏参数
 
 ```bash
-  ae_username= 批注人姓名，添加批注时显示的批注人姓名
+ae_username= 批注人姓名，添加批注时显示的批注人姓名
 ```
 
 ```bash
-  ae_get_url= 批注数据地址，通过此地址加载已保存的批注数据 示例 ./examples/pdfjs-4.3.136-dist/pdfjs-annotation-extension-testdata.json
+ae_get_url= 批注数据地址，通过此地址加载已保存的批注数据 示例 ./examples/pdfjs-4.3.136-dist/pdfjs-annotation-extension-testdata.json
 ```
 
 ```bash
-  ae_post_url= 批注数据提交地址
+ae_post_url= 批注数据提交地址
 ```
 
 ```bash
-  ae_default_editor_active= true | false 是否激活编辑器
+ae_default_editor_active= true | false 是否激活编辑器
 ```
 
 ```bash
-  ae_default_sidebar_open= true | false 是否打开侧边栏
+ae_default_sidebar_open= true | false 是否打开侧边栏
 ```
 
 使用方式 ： http://localhost:8888/web/viewer.html?#ae_username=老麦&ae_get_url=http://localhost:8888/pdfjs-annotation-extension-testdata.json&ae_post_url=http://localhost:8888/save&ae_default_editor_active=true&ae_default_sidebar_open=true
@@ -155,17 +174,17 @@ src/const/default_options.ts
 加载PDF文件批注，需修改：
 
 ```
-  LOAD_PDF_ANNOTATION: true, // 是否加载 pdf 原有批注 
+LOAD_PDF_ANNOTATION: true, // 是否加载 pdf 原有批注
 ```
 
 ***注意： 如果需要编辑 pdf 原有批注，需将 pdfjs 中的 annotationMode 改为 0，这样 pdfjs 才不会渲染批注***
 
 ```
-  pdfjs-dist/web/viewer.mjs
+pdfjs-dist/web/viewer.mjs
 ```
 
 ```
- annotationMode: {
+annotationMode: {
    value: 0,  //这里改为 0
    kind: OptionKind.VIEWER + OptionKind.PREFERENCE
  },
@@ -178,13 +197,13 @@ src/const/default_options.ts
 您可将它修改为您pdfjs dist地址，以方便开发
 
 ```bash
-  output: path.resolve(__dirname, '../examples/pdfjs-4.3.136-dist/web/pdfjs-annotation-extension'),
+output: path.resolve(__dirname, '../examples/pdfjs-4.3.136-dist/web/pdfjs-annotation-extension'),
 ```
 
 ### 打包
 
 ```bash
-  $ npm run build 或 yarn build
+$ npm run build 或 yarn build
 ```
 
 也可以直接下载发布版本
@@ -194,7 +213,7 @@ src/const/default_options.ts
 修改文件：pdfjs-dist/web/viewer.html，只需增加一行代码，引入生成的文件即可
 
 ```html
-    <script src="../build/pdf.mjs" type="module"></script>
+<script src="../build/pdf.mjs" type="module"></script>
     <link rel="stylesheet" href="viewer.css">
     <script src="viewer.mjs" type="module"></script>
     <!--这里引入生成的文件-->
@@ -213,3 +232,4 @@ https://github.com/mozilla/pdf.js/wiki/Frequently-Asked-Questions#faq-annotation
 ## 7、兼容性
 
 目前仅测试 pdfjs-4.3.136-dist， 不支持页面旋转后的绘制
+

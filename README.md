@@ -10,6 +10,20 @@
 </div>
 
 ---
+## 📢 React Version Available
+
+### A React-based implementation of this project is now available:
+👉 [pdfjs-annotation-extension-for-react](https://github.com/Laomai-codefee/pdfjs-annotation-extension-for-react/)
+
+1. The new project is built on the same core ideas as this repository.
+It provides an extensible annotation system powered by PDF.js and is fully refactored into a modern React component architecture.
+
+2. If you are building applications with React and need an extensible PDF annotation solution, we highly recommend checking out the new React version.
+
+3. This repository will remain as a reference for the original implementation and design concepts, while ongoing development and new features will primarily focus on the React version.
+
+
+---
 
 English | [简体中文](./README_CN.md)
 
