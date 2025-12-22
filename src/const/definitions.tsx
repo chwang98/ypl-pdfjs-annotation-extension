@@ -135,6 +135,7 @@ export interface IAnnotationStyle {
 // 用于描述批注的文本或图像内容
 export interface IAnnotationComment {
     id: string;
+    userId: string;
     title: string; // 批注标题
     date: string; // 批注日期
     content: string; // 批注内容
@@ -159,6 +160,7 @@ export interface IAnnotationContentsObj {
 // 用于描述存储在应用中的批注信息
 export interface IAnnotationStore {
     id: string; // 批注的唯一标识符
+    userId: string; // 用户Id
     pageNumber: number; // 批注所在的页码
     konvaString: string; // Konva 的序列化表示
     konvaClientRect: IRect; // 批注在 stage 中的位置
@@ -432,8 +434,12 @@ export const HASH_PARAMS_PREFIX = 'ae'
 export const HASH_PARAMS_USERNAME = `${HASH_PARAMS_PREFIX}_username` // 用户名
 
 export const HASH_PARAMS_GET_URL = `${HASH_PARAMS_PREFIX}_get_url`  // 数据获取默认地址
+export const HASH_PARAMS_BUSINESS_BASE_URL = `${HASH_PARAMS_PREFIX}_business_base_url`
 
-export const HASH_PARAMS_POST_URL = `${HASH_PARAMS_PREFIX}_post_url` // 保存地址
+export const HASH_PARAMS_POST_URL = `${HASH_PARAMS_PREFIX}_post_url` //
+// 保存地址
+export const HASH_TOKEN = `${HASH_PARAMS_PREFIX}_token` // token
+export const HASH_BUSINESS_ID = `${HASH_PARAMS_PREFIX}_business_id` // token
 
 export const HASH_PARAMS_DEFAULT_EDITOR_ACTIVE = `${HASH_PARAMS_PREFIX}_default_editor_active` // 是否激活编辑器
 

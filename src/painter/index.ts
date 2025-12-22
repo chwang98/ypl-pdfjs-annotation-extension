@@ -35,6 +35,7 @@ export interface KonvaCanvas {
 // Painter 类定义
 export class Painter {
     private userName: string
+    private userId: string
     private konvaCanvasStore: Map<number, KonvaCanvas> = new Map() // 存储 KonvaCanvas 实例
     private editorStore: Map<string, Editor> = new Map() // 存储编辑器实例
     private pdfViewerApplication: PDFViewerApplication // PDFViewerApplication 实例
@@ -59,6 +60,7 @@ export class Painter {
      */
     constructor({
         userName,
+        userId,
         PDFViewerApplication,
         PDFJS_EventBus,
         setDefaultMode,
@@ -71,6 +73,7 @@ export class Painter {
         onAnnotationChanged
     }: {
         userName: string
+        userId: string
         PDFViewerApplication: PDFViewerApplication
         PDFJS_EventBus: EventBus
         setDefaultMode: () => void
@@ -83,6 +86,7 @@ export class Painter {
         onAnnotationChanged: (annotationStore: IAnnotationStore, selectorRect: IRect) => void
     }) {
         this.userName = userName
+        this.userId = userId
         this.pdfViewerApplication = PDFViewerApplication // 初始化 PDFViewerApplication
         this.pdfjsEventBus = PDFJS_EventBus // 初始化 PDF.js EventBus
         this.setDefaultMode = setDefaultMode // 设置默认模式的函数
@@ -134,6 +138,7 @@ export class Painter {
                             storeEditor = new EditorHighLight(
                                 {
                                     userName: this.userName,
+                                    userId: window.userInfo.id,
                                     pdfViewerApplication: this.pdfViewerApplication,
                                     konvaStage,
                                     pageNumber,
@@ -338,6 +343,7 @@ export class Painter {
             case AnnotationType.FREETEXT:
                 editor = new EditorFreeText({
                     userName: this.userName,
+                    userId: window.userInfo.id,
                     pdfViewerApplication: this.pdfViewerApplication,
                     konvaStage,
                     pageNumber,
@@ -353,6 +359,7 @@ export class Painter {
             case AnnotationType.RECTANGLE:
                 editor = new EditorRectangle({
                     userName: this.userName,
+                    userId: window.userInfo.id,
                     pdfViewerApplication: this.pdfViewerApplication,
                     konvaStage,
                     pageNumber,
@@ -368,6 +375,7 @@ export class Painter {
             case AnnotationType.ARROW:
                 editor = new EditorArrow({
                     userName: this.userName,
+                    userId: window.userInfo.id,
                     pdfViewerApplication: this.pdfViewerApplication,
                     konvaStage,
                     pageNumber,
@@ -383,6 +391,7 @@ export class Painter {
             case AnnotationType.CLOUD:
                 editor = new EditorCloud({
                     userName: this.userName,
+                    userId: window.userInfo.id,
                     pdfViewerApplication: this.pdfViewerApplication,
                     konvaStage,
                     pageNumber,
@@ -398,6 +407,7 @@ export class Painter {
             case AnnotationType.CIRCLE:
                 editor = new EditorCircle({
                     userName: this.userName,
+                    userId: window.userInfo.id,
                     pdfViewerApplication: this.pdfViewerApplication,
                     konvaStage,
                     pageNumber,
@@ -413,6 +423,7 @@ export class Painter {
             case AnnotationType.NOTE:
                 editor = new EditorNote({
                     userName: this.userName,
+                    userId: window.userInfo.id,
                     pdfViewerApplication: this.pdfViewerApplication,
                     konvaStage,
                     pageNumber,
@@ -426,6 +437,7 @@ export class Painter {
             case AnnotationType.FREEHAND:
                 editor = new EditorFreeHand({
                     userName: this.userName,
+                    userId: window.userInfo.id,
                     pdfViewerApplication: this.pdfViewerApplication,
                     konvaStage,
                     pageNumber,
@@ -441,6 +453,7 @@ export class Painter {
             case AnnotationType.FREE_HIGHLIGHT:
                 editor = new EditorFreeHighlight({
                     userName: this.userName,
+                    userId: window.userInfo.id,
                     pdfViewerApplication: this.pdfViewerApplication,
                     konvaStage,
                     pageNumber,
@@ -457,6 +470,7 @@ export class Painter {
                 editor = new EditorSignature(
                     {
                         userName: this.userName,
+                        userId: window.userInfo.id,
                         pdfViewerApplication: this.pdfViewerApplication,
                         konvaStage,
                         pageNumber,
@@ -473,6 +487,7 @@ export class Painter {
                 editor = new EditorStamp(
                     {
                         userName: this.userName,
+                        userId: window.userInfo.id,
                         pdfViewerApplication: this.pdfViewerApplication,
                         konvaStage,
                         pageNumber,
@@ -491,6 +506,7 @@ export class Painter {
                 editor = new EditorHighLight(
                     {
                         userName: this.userName,
+                        userId: window.userInfo.id,
                         pdfViewerApplication: this.pdfViewerApplication,
                         konvaStage,
                         pageNumber,

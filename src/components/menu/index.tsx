@@ -15,7 +15,8 @@ import { PAINTER_WRAPPER_PREFIX } from '../../painter/const'
 interface CustomAnnotationMenuProps {
     onOpenComment: (annotation: IAnnotationStore) => void
     onChangeStyle: (annotation: IAnnotationStore, styles: IAnnotationStyle) => void
-    onDelete: (annotation: IAnnotationStore) => void
+    onDelete: (annotation: IAnnotationStore) => void,
+    canDelete: (annotation: IAnnotationStore) => boolean,
 }
 
 export interface CustomAnnotationMenuRef {
@@ -205,7 +206,7 @@ const CustomAnnotationMenu = forwardRef<CustomAnnotationMenuRef, CustomAnnotatio
                             </li>
                         )}
 
-                        <li onMouseDown={() => {
+                        {props.canDelete(currentAnnotation) && (<li onMouseDown={() => {
                             if (currentAnnotation) {
                                 props.onDelete(currentAnnotation)
                                 close()
@@ -214,7 +215,7 @@ const CustomAnnotationMenu = forwardRef<CustomAnnotationMenuRef, CustomAnnotatio
                             <div className="icon">
                                 <DeleteIcon />
                             </div>
-                        </li>
+                        </li>)}
                     </ul>
                 )
             }

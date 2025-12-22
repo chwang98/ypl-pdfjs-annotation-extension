@@ -781,7 +781,8 @@ const defaultOptions = {
 };
 {
   defaultOptions.defaultUrl = {
-    value: "compressed.tracemonkey-pldi-09.pdf",
+    // value: "compressed.tracemonkey-pldi-09.pdf",
+    value: "2025124_542524doc.pdf",
     kind: OptionKind.VIEWER
   };
   defaultOptions.sandboxBundleSrc = {

@@ -93,10 +93,13 @@ const { TextArea } = Input
 
 interface CustomCommentProps {
     userName: string
+    userId: string
     onSelected: (annotation: IAnnotationStore) => void
     onUpdate: (annotation: IAnnotationStore) => void
     onDelete: (id: string) => void
     onScroll?: () => void
+    canDelete: (annotation: IAnnotationStore) => boolean
+    canDeleteReply: (comment: IAnnotationComment) => boolean
 }
 
 export interface CustomCommentRef {
@@ -313,6 +316,7 @@ const CustomComment = forwardRef<CustomCommentRef, CustomCommentProps>(function 
         const newReply = {
             id: generateUUID(),
             title: props.userName,
+            userId: window.userInfo.id,
             date: formatTimestamp(Date.now()),
             content: comment,
             status
@@ -341,6 +345,7 @@ const CustomComment = forwardRef<CustomCommentRef, CustomCommentProps>(function 
         reply.date = formatTimestamp(Date.now())
         reply.content = comment
         reply.title = props.userName
+        reply.userId = window.userInfo.id
         props.onUpdate(annotation)
     }
 
@@ -538,7 +543,7 @@ const CustomComment = forwardRef<CustomCommentRef, CustomCommentProps>(function 
                                         </span>
                                     </Dropdown>
                                     <Dropdown
-                                        menu={{
+                                        menu={props.canDelete(annotation) ? {
                                             items: [
                                                 {
                                                     label: t('normal.reply'),
@@ -565,6 +570,17 @@ const CustomComment = forwardRef<CustomCommentRef, CustomCommentProps>(function 
                                                     }
                                                 }
                                             ]
+                                        } : {
+                                            items: [
+                                                {
+                                                    label: t('normal.reply'),
+                                                    key: '0',
+                                                    onClick: e => {
+                                                        e.domEvent.stopPropagation()
+                                                        setReplyAnnotation(annotation)
+                                                    }
+                                                }
+                                            ]
                                         }}
                                         trigger={['click']}
                                     >
@@ -583,7 +599,7 @@ const CustomComment = forwardRef<CustomCommentRef, CustomCommentProps>(function 
                                         </div>
                                         <span className="tool">
                                             <Dropdown
-                                                menu={{
+                                                menu={ props.canDelete(annotation) ? {
                                                     items: [
                                                         {
                                                             label: t('normal.edit'),
@@ -601,6 +617,10 @@ const CustomComment = forwardRef<CustomCommentRef, CustomCommentProps>(function 
                                                                 deleteReply(annotation, reply)
                                                             }
                                                         }
+                                                    ]
+                                                } : {
+                                                    items: [
+
                                                     ]
                                                 }}
                                                 trigger={['click']}

@@ -11,6 +11,7 @@ import { SHAPE_GROUP_NAME } from '../const'
  */
 export interface IEditorOptions {
     userName: string
+    userId: string
     pdfViewerApplication: PDFViewerApplication
     konvaStage: Konva.Stage // Konva Stage对象
     pageNumber: number // 页面编号
@@ -98,6 +99,7 @@ export abstract class Editor {
             konvaString: konvaGroup.toJSON(),
             konvaClientRect: Konva.Node.create(konvaGroup.toJSON()).getClientRect(),
             title: this.userName,
+            userId: window.userInfo.id,
             type: annotation.type,
             pdfjsType: annotation.pdfjsAnnotationType,
             pdfjsEditorType: annotation.pdfjsEditorType,

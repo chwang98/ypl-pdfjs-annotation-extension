@@ -13,6 +13,7 @@ interface CustomToolbarProps {
     defaultAnnotationName: string
     defaultSidebarOpen: boolean
     userName: string
+    userId: string
     onChange: (annotation: IAnnotationType | null, dataTransfer: string | null) => void
     onSave: () => void
     onExport: (type: 'pdf' | 'excel') => void

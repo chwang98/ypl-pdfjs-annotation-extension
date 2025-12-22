@@ -8,7 +8,15 @@ import { SyncOutlined } from '@ant-design/icons';
 import i18n, { t } from 'i18next'
 import { CustomPopbar, CustomPopbarRef } from './components/popbar'
 import { CustomToolbar, CustomToolbarRef } from './components/toolbar'
-import { annotationDefinitions, HASH_PARAMS_DEFAULT_EDITOR_ACTIVE, HASH_PARAMS_DEFAULT_SIDEBAR_OPEN, HASH_PARAMS_GET_URL, HASH_PARAMS_POST_URL, HASH_PARAMS_USERNAME } from './const/definitions'
+import {
+    annotationDefinitions, HASH_BUSINESS_ID, HASH_PARAMS_BUSINESS_BASE_URL,
+    HASH_PARAMS_DEFAULT_EDITOR_ACTIVE,
+    HASH_PARAMS_DEFAULT_SIDEBAR_OPEN,
+    HASH_PARAMS_GET_URL,
+    HASH_PARAMS_POST_URL,
+    HASH_PARAMS_USERNAME,
+    HASH_TOKEN
+} from './const/definitions'
 import { Painter } from './painter'
 import { CustomComment, CustomCommentRef } from './components/comment'
 import { once, parseQueryString, hashArrayOfObjects } from './utils/utils'
@@ -38,7 +46,9 @@ class PdfjsAnnotationExtension {
     appOptions: AppOptions
     loadEnd: Boolean
     initialDataHash: number
+    version: number
     _connectorLine: ConnectorLine | null = null
+    userInfo: any
 
     constructor() {
         this.loadEnd = false
@@ -71,6 +81,7 @@ class PdfjsAnnotationExtension {
         // 创建画笔实例
         this.painter = new Painter({
             userName: this.getOption(HASH_PARAMS_USERNAME),
+            userId: this.userInfo?.id,
             PDFViewerApplication: this.PDFJS_PDFViewerApplication,
             PDFJS_EventBus: this.PDFJS_EventBus,
             setDefaultMode: () => {
@@ -175,7 +186,22 @@ class PdfjsAnnotationExtension {
         } else {
             console.warn(`${HASH_PARAMS_DEFAULT_EDITOR_ACTIVE} is undefined`);
         }
+        if (params.has(HASH_TOKEN)) {
+            this.setOption(HASH_TOKEN, params.get(HASH_TOKEN))
+        } else {
+            console.warn(`${HASH_TOKEN} is undefined`);
+        }
 
+        if (params.has(HASH_BUSINESS_ID)) {
+            this.setOption(HASH_BUSINESS_ID, params.get(HASH_BUSINESS_ID))
+        } else {
+            console.warn(`${HASH_BUSINESS_ID} is undefined`);
+        }
+        if (params.has(HASH_PARAMS_BUSINESS_BASE_URL)) {
+            this.setOption(HASH_PARAMS_BUSINESS_BASE_URL, params.get(HASH_PARAMS_BUSINESS_BASE_URL))
+        } else {
+            console.warn(`${HASH_PARAMS_BUSINESS_BASE_URL} is undefined`);
+        }
     }
 
     private setOption(name: string, value: string) {
@@ -226,6 +252,7 @@ class PdfjsAnnotationExtension {
                 defaultAnnotationName={this.getOption(HASH_PARAMS_DEFAULT_EDITOR_ACTIVE)}
                 defaultSidebarOpen={this.getOption(HASH_PARAMS_DEFAULT_SIDEBAR_OPEN) === 'true'}
                 userName={this.getOption(HASH_PARAMS_USERNAME)}
+                userId={this.userInfo?.id}
                 onChange={(currentAnnotation, dataTransfer) => {
                     this.painter.activate(currentAnnotation, dataTransfer)
                 }}
@@ -275,6 +302,9 @@ class PdfjsAnnotationExtension {
         createRoot(annotationMenu).render(
             <CustomAnnotationMenu
                 ref={this.customerAnnotationMenuRef}
+                canDelete={(currentAnnotation) => {
+                    return currentAnnotation.title == this.getOption(HASH_PARAMS_USERNAME)
+                }}
                 onOpenComment={(currentAnnotation) => {
                     this.toggleComment(true)
                     this.customToolbarRef.current.toggleSidebarBtn(true)
@@ -303,6 +333,7 @@ class PdfjsAnnotationExtension {
             <CustomComment
                 ref={this.customCommentRef}
                 userName={this.getOption(HASH_PARAMS_USERNAME)}
+                userId={this.userInfo?.id}
                 onSelected={async (annotation) => {
                     await this.painter.highlight(annotation)
                 }}
@@ -318,6 +349,9 @@ class PdfjsAnnotationExtension {
                 }}
                 onScroll={() => {
                     this.connectorLine?.clearConnection()
+                }}
+                canDelete={(currentAnnotation) => {
+                    return currentAnnotation.title == this.getOption(HASH_PARAMS_USERNAME)
                 }}
             />
         )
@@ -383,7 +417,11 @@ class PdfjsAnnotationExtension {
         // 监听文档加载完成事件
         this.PDFJS_EventBus._on('documentloaded', async () => {
             this.painter.initWebSelection(this.$PDFJS_viewerContainer)
-            const data = await this.getData()
+            let res = await this.getData()
+            await this.getUserInfo()
+            let data = res.result?.content
+            this.version = res.result?.version || 1
+            console.log(data)
             this.initialDataHash = hashArrayOfObjects(data)
             await this.painter.initAnnotations(data, defaultOptions.setting.LOAD_PDF_ANNOTATION)
             if (this.loadEnd) {
@@ -401,13 +439,17 @@ class PdfjsAnnotationExtension {
         if (!getUrl) {
             return [];
         }
+        const token = this.getOption(HASH_TOKEN);
         try {
             message.open({
                 type: 'loading',
                 content: t('normal.processing'),
                 duration: 0,
             });
-            const response = await fetch(getUrl, { method: 'GET' });
+            const response = await fetch(getUrl, {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
 
             if (!response.ok) {
                 const errorMessage = `HTTP Error ${response.status}: ${response.statusText || 'Unknown Status'}`;
@@ -428,6 +470,44 @@ class PdfjsAnnotationExtension {
         } finally {
             message.destroy();
         }
+
+    }
+
+    private async getUserInfo(): Promise<any[]> {
+        const getUrl = this.getOption(HASH_PARAMS_BUSINESS_BASE_URL);
+        if (!getUrl) {
+            return [];
+        }
+        const token = this.getOption(HASH_TOKEN);
+        try {
+            const response = await fetch(getUrl + '/api/sysUser/baseInfo', {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+
+            if (!response.ok) {
+                const errorMessage = `HTTP Error ${response.status}: ${response.statusText || 'Unknown Status'}`;
+                throw new Error(errorMessage);
+            }
+            var responseJson = await response.json()
+            this.userInfo = responseJson.result || {}
+            window.userInfo = responseJson.result || {}
+            return responseJson;
+        } catch (error) {
+            Modal.error({
+                content: t('load.fail', { value: error?.message }),
+                closable: false,
+                okButtonProps: {
+                    loading: false
+                },
+                okText: t('normal.ok')
+            })
+            console.error('Fetch error:', error);
+            return [];
+        } finally {
+            message.destroy();
+        }
+
     }
 
     /**
@@ -438,9 +518,19 @@ class PdfjsAnnotationExtension {
         const dataToSave = this.painter.getData();
         console.log('%c [ dataToSave ]', 'font-size:13px; background:#d10d00; color:#ff5144;', dataToSave)
         const postUrl = this.getOption(HASH_PARAMS_POST_URL);
+        const token = this.getOption(HASH_TOKEN);
+        const businessId = this.getOption(HASH_BUSINESS_ID);
         if (!postUrl) {
             message.error({
                 content: t('save.noPostUrl', { value: HASH_PARAMS_POST_URL }),
+                key: 'save',
+            });
+            return;
+        }
+
+        if (!token) {
+            message.error({
+                content: t('save.noToken'),
                 key: 'save',
             });
             return;
@@ -456,13 +546,18 @@ class PdfjsAnnotationExtension {
         try {
             const response = await fetch(postUrl, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dataToSave),
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({
+                    businessId: businessId,
+                    content: dataToSave,
+                    version: this.version
+                }),
             });
-            if (!response.ok) {
-                throw new Error(`Failed to save PDF. Status: ${response.status} ${response.statusText}`);
-            }
             const result = await response.json();
+            if (result.code != 200) {
+                throw new Error(`Failed to save PDF. Code: ${result.code} ${result.message}`);
+            }
+            this.version = result.result.version
             // {"status": "ok", "message": "POST received!"}
             this.initialDataHash = hashArrayOfObjects(dataToSave)
             modal.destroy()

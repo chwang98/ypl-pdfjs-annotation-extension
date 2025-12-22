@@ -108,7 +108,8 @@
         "start": "Saving...",
         "success": "Saved successfully!",
         "fail": "Failed to save. {{value}}",
-        "noPostUrl": "{{value}} not found."
+        "noPostUrl": "{{value}} not found.",
+        "noToken": "No user info cant not save."
     },
     "load": {
         "fail": "Annotation Data Load Fail: {{value}}"
